@@ -9,6 +9,7 @@ interface Tasks {
 
 export function App() {
   const [tasks, setTasks] = useState<Tasks[]>([]);
+  const [searchValue, setSearchValue] = useState('');
   const titleInput = useRef<HTMLInputElement>(null);
   const descriptionTextarea = useRef<HTMLTextAreaElement>(null);
 
@@ -63,15 +64,35 @@ export function App() {
           </form>
         </div>
         <div className='col-span-3 border border-zinc-950 rounded-xl p-4 flex flex-col gap-4 overflow-y-auto'>
-          {tasks.map((task) => (
-            <Task
-              key={task.id}
-              title={task.title}
-              description={task.description}
-              id={task.id}
-              deleteFn={handleDeleteTask}
-            />
-          ))}
+          <input
+            type='text'
+            name='title'
+            className='outline-none rounded-lg shadow-lg p-4'
+            placeholder='Filter...'
+            maxLength={56}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.currentTarget.value)}
+          />
+
+          {tasks.filter((task) =>
+            task.title.toLowerCase().includes(searchValue.toLowerCase())
+          ).length === 0 && tasks.length > 0 ? (
+            <p className='text-xl'>Nada encontrado</p>
+          ) : (
+            tasks
+              .filter((task) =>
+                task.title.toLowerCase().includes(searchValue.toLowerCase())
+              )
+              .map((task) => (
+                <Task
+                  key={task.id}
+                  title={task.title}
+                  description={task.description}
+                  id={task.id}
+                  deleteFn={handleDeleteTask}
+                />
+              ))
+          )}
         </div>
       </div>
     </div>
