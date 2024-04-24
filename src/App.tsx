@@ -18,14 +18,22 @@ export function App() {
   ) => {
     e.preventDefault();
 
-    if (titleInput.current?.value && descriptionTextarea.current?.value) {
-      const title = titleInput.current.value;
-      const description = descriptionTextarea.current.value;
-      const id = crypto.randomUUID();
-      const task = { title, description, id };
+    const title = titleInput.current?.value;
+    const description = descriptionTextarea.current?.value;
 
-      setTasks([...tasks, task]);
-    }
+    if (!title || !description) return;
+
+    const taskExists =
+      tasks.filter((task) =>
+        task.title.toLowerCase().includes(title.toLowerCase())
+      ).length > 0;
+
+    if (taskExists) return;
+
+    const id = crypto.randomUUID();
+    const task = { title, description, id };
+
+    setTasks([...tasks, task]);
   };
 
   const handleDeleteTask = (id: string) => {
